@@ -1,5 +1,5 @@
 # IBM Employee Database Architecture
-An sql database was designed on the IBM Data set in accordance with the normalization rules (1NF, 2NF, 3NF).
+An database was designed on sql using the IBM Data set in accordance with the normalization rules (1NF, 2NF, 3NF).
 
 *ERdiagram file = IBM-ER-3NF.mwb*  
 *SQL querys = IBM-SQL.sql and test.sql*  
