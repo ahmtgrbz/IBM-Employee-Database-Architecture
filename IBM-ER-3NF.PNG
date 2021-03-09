@@ -1,0 +1,47 @@
+-- SET SQL_SAFE_UPDATES = 0;
+
+-- Job rollerine göre(görevlerine göre) ortalama üzerinde maaş alan insanları getir.
+
+-- select a.EmployeeNumber,a.JobRole, a.MonthlyIncome,average
+--  from
+-- (select Employee.EmployeeNumber,JobRole,MonthlyIncome
+-- from Employee_has_Job join Job on Employee_has_Job.Job_JobID = Job.JobID
+-- join Employee on Employee_has_Job.Employeenumber = Employee.Employeenumber
+-- join Earnings on Earnings.Employeenumber = Employee.Employeenumber) as a,
+-- (select JobRole,avg(MonthlyIncome) as average
+-- from Employee_has_Job join Job on Employee_has_Job.Job_JobID = Job.JobID
+-- join Employee on Employee_has_Job.Employeenumber = Employee.Employeenumber
+-- join Earnings on Earnings.Employeenumber = Employee.Employeenumber group by JobRole) as b
+--  where b.JobRole = a.JobRole and a.MonthlyIncome>average;
+
+
+-- Creating View
+create view incomesandjobs as
+select Employee.EmployeeNumber,JobRole,MonthlyIncome
+from Employee_has_Job join Job on Employee_has_Job.Job_JobID = Job.JobID
+join Employee on Employee_has_Job.Employeenumber = Employee.Employeenumber
+join Earnings on Earnings.Employeenumber = Employee.Employeenumber;
+
+
+-- Counter for inout procedure. This counter count the number of procedures called.
+set @counter = 0;
+
+call average_jobs_earning("Manager",@manager_average);
+call counter(@counter);
+select @counter;
+
+
+-- calling stored procedure for getting average Managers salary.
+call average_jobs_earning("Manager",@manager_average);
+select @manager_average as Manegers_Average_Earnings;
+
+set @job = "Healthcare Representative";
+-- calling stored procedure for getting average Healthcare Representatives salary.
+call average_jobs_earning(@job,@HR_average);
+select @HR_average as Healthcare_Representative_Average_Earnings;
+
+-- example sql query using view and previous stored prosedure
+select a.EmployeeNumber,a.JobRole, a.MonthlyIncome,@HR_average as Average_Earning_HR
+from incomesandjobs as a
+where a.JobRole = @job and a.MonthlyIncome>@HR_average;
+
